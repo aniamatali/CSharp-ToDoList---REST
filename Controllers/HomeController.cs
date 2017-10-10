@@ -8,25 +8,38 @@ namespace ToDoList.Controllers
     public class HomeController : Controller
     {
 
-        [Route("/")]
+        [HttpGet("/")]
         public ActionResult Index()
         {
             return View();
         }
 
-        [Route("/task/list")]
-        public ActionResult TaskList()
+        [HttpGet("/tasks")]
+        public ActionResult Tasks()
         {
-          List<string> allTasks = Task.GetAll();
+          List<Task> allTasks = Task.GetAll();
             return View(allTasks);
         }
 
-        [HttpPost("/task/create")]
-        public ActionResult CreateTask()
+        [HttpGet("/tasks/new")]
+        public ActionResult TaskForm()
         {
-          Task newTask = new Task (Request.Form["new-task"]);
-          newTask.Save();
-          return View(newTask);
+        return View();
+        }
+
+        [HttpPost("/tasks")]
+        public ActionResult AddTask()
+        {
+            Task newTask = new Task(Request.Form["new-task"]);
+            List<Task> allTasks = Task.GetAll();
+            return View("Tasks", allTasks);
+        }
+
+        [HttpGet("/tasks/{id}")]
+        public ActionResult TaskDetail(int id)
+        {
+          Task task = Task.Find(id);
+          return View(task);
         }
 
         [HttpPost("/task/list/clear")]
